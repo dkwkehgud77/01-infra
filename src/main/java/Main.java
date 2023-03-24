@@ -16,7 +16,7 @@ public class Main {
         PipelineSetting pipeline = new PipelineSetting();
 
         // 첨부된 스키마를 내용으로 JSON 파일 읽음
-        String jsonFilePath = "./src/main/resources/schema/schema_before.json";
+        String jsonFilePath = "../schema/schema_before.json";
         try(FileReader reader = new FileReader(jsonFilePath)){
             JSONParser parser = new JSONParser();
             JSONArray beforeJsonArray = (JSONArray) parser.parse(reader);

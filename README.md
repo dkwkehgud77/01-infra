@@ -9,8 +9,20 @@
 cd pipeline/01-infra
 docker-compose up -d 
 
-mvn clean package
+mvn clean compile
 mvn exec:java
-# java -jar infra-1.0-SNAPSHOT-jar
+
+mvn clean package
+java -jar infra-1.0-SNAPSHOT-jar
 ```
 
+USE mysql;
+CREATE USER 'infra'@'%' IDENTIFIED BY 'infra1!';
+GRANT ALL PRIVILEGES ON *.* TO 'infra'@'%';
+FLUSH PRIVILEGES;
+
+
+USE mysql;
+CREATE USER 'consumer'@'%' IDENTIFIED BY 'consumer1!';
+GRANT ALL PRIVILEGES ON *.* TO 'consumer'@'%'; 
+FLUSH PRIVILEGES;

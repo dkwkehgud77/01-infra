@@ -56,7 +56,7 @@ public class PipelineSetting {
         }
 
         // Avro 포맷의 Json 파일로 덤프
-        String jsonFilePath = "./src/main/resources/schema/schema_avro.json";
+        String jsonFilePath = "../schema/schema_avro.json";
         try(FileWriter avroJsonFile = new FileWriter(jsonFilePath)){
             avroJsonFile.write(avroJsonArray.toJSONString());
             avroJsonFile.flush();
@@ -100,15 +100,19 @@ public class PipelineSetting {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bank", "consumer", "rlaehgud1!");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "infra", "infra1!");
             stmt = conn.createStatement();
+            String sql_database = "CREATE DATABASE IF NOT EXISTS bank";
+            stmt.executeUpdate(sql_database);
+            stmt.execute("USE bank");
 
             for(Schema avroSchema : avroSchemaList) {
+
 
                 String tableName = avroSchema.getName();
                 List<Schema.Field> fields = avroSchema.getFields();
 
-                StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
+                StringBuilder sql_table = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
                 for (Schema.Field field : fields) {
                     String name = field.name();
                     Schema.Type type = field.schema().getType();
@@ -136,12 +140,12 @@ public class PipelineSetting {
                             // TODO: handle other data types if necessary
                             break;
                     }
-                    sql.append(name).append(" ").append(sqlType).append(",");
+                    sql_table.append(name).append(" ").append(sqlType).append(",");
                 }
-                sql.deleteCharAt(sql.length() - 1);
-                sql.append(");");
+                sql_table.deleteCharAt(sql_table.length() - 1);
+                sql_table.append(");");
 //                System.out.println(sql.toString());
-                stmt.executeUpdate(sql.toString());
+                stmt.executeUpdate(sql_table.toString());
                 System.out.println("Table created successfully... " + tableName);
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -155,6 +159,8 @@ public class PipelineSetting {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            // 애플리케이션을 종료합니다.
+            System.exit(0);
         }
     }
 }
