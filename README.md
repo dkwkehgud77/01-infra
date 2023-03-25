@@ -6,7 +6,7 @@
 - AVRO 스키마, Kafka 토픽, MySql 테이블 생성
 
 ```bash
-cd pipeline/01-infra
+cd realtime-pipeline/01-infra
 docker-compose up -d 
 
 mvn clean compile
