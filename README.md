@@ -3,13 +3,12 @@
 ### Introduction
 이 애플리케이션은 JSON 설정 파일을 읽어 AVRO 스키마, Kafka 토픽, 및 MySQL 테이블을 자동으로 생성합니다. 
 데이터 파이프라인 설치 과정을 간소화하고 AVRO 스키마, Kafka 토픽 및 MySQL 테이블 간의 일관성을 보장할 수 있습니다.
-이를 통해 시간을 절약하고 오류 위험을 줄이며 데이터 인프라를 유지 관리하고 확장하기 쉬워집니다.
+새로운 데이터 파이프라인을 세팅하는 시간을 절약하고 오류 위험을 줄이며 데이터 인프라를 유지 관리하고 확장하기 쉬워집니다.
 
 ### Features
 - 테스트를 위한 Kafka, Schema-Registry, MySQL 등 Docker-compose 로 세팅
 - 첨부된 Json 파일을 읽어 Avro Schema 포맷의 Json 파일로 변환하여 덤프 및 재사용
-- Avro Schema 데이터를 파싱하여 Kafka Topic, MySQL Table을 동적으로 생성   
-- 새로운 데이터 파이프라인을 관리하고 배포하는 작업에 시간을 절약하고 오류 위험을 감소 
+- Avro Schema 데이터를 파싱하여 Kafka Topic, MySQL Table을 동적으로 생성
 
 
 # Getting Started
