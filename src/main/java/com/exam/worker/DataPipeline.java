@@ -1,6 +1,8 @@
 package com.exam.worker;
 
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.ListTopicsResult;
@@ -161,6 +163,7 @@ public class DataPipeline {
 
                 // Avro 스키마에서 Table 명과 Filed 리스트를 가져옵니다.
                 String tableName = avroSchema.getName();
+                GenericRecord c = new GenericData.Record(avroSchema);
                 List<Schema.Field> fields = avroSchema.getFields();
 
                 // Avro 스키마를 기반으로 동적으로 MySQL 테이블 생성 SQL 구문을 생성합니다.
@@ -192,7 +195,6 @@ public class DataPipeline {
                             sqlType = "VARCHAR(255)";
                             break;
                         default:
-                            // TODO: handle other data types if necessary
                             break;
                     }
                     sql_table.append(name).append(" ").append(sqlType).append(",");

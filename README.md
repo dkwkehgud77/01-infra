@@ -1,14 +1,15 @@
 # Data Pipeline Setting
 
 ### Introduction
-이 애플리케이션은 JSON 설정 파일을 읽어 AVRO 스키마, Kafka 토픽, 및 MySQL 테이블을 자동으로 생성합니다. 
+이 애플리케이션은 첨부된 스키마 JSON 파일을 읽어 AVRO 스키마, Kafka 토픽, 및 MySQL 테이블을 자동으로 생성합니다. 
 데이터 파이프라인 설치 과정을 간소화하고 AVRO 스키마, Kafka 토픽 및 MySQL 테이블 간의 일관성을 보장할 수 있습니다.
 이를 통해 새로운 데이터 파이프라인을 세팅하는 시간을 절약하고 오류 위험을 줄이며 데이터 인프라를 유지 관리하고 확장하기 쉬워집니다.
 
 ### Features
 - 테스트를 위한 Kafka, Schema-Registry, MySQL 등 Docker-compose 로 세팅
-- 첨부된 Json 파일을 읽어 Avro Schema 포맷의 Json 파일로 변환하여 덤프 및 재사용
-- Avro Schema 데이터를 파싱하여 Kafka Topic, MySQL Table을 동적으로 생성
+- 첨부된 Json 파일을 읽어 Avro 스키마 포맷의 Json 파일로 변환하여 덤프 및 재사용
+- Avro 스키마 데이터를 파싱하여 Kafka 토픽, MySQL 테이블을 동적으로 생성
+- AVRO 스키마, Kafka 토픽, MySql 테이블은 1:1:1의 관계로 구성
 
 
 # Getting Started
@@ -44,6 +45,26 @@ a9e70028d48e   confluentinc/cp-kafka:7.0.0             "/etc/confluent/dock…" 
 2161366c7af8   confluentinc/cp-kafka:7.0.0             "/etc/confluent/dock…"   13 hours ago   Up 13 hours   0.0.0.0:9092->9092/tcp                                 kafka2
 e4378c3e42ca   mysql:8.0                               "docker-entrypoint.s…"   2 days ago     Up 13 hours   0.0.0.0:3306->3306/tcp, 33060/tcp                      mysql
 9a4e488a016e   zookeeper:3.7                           "/docker-entrypoint.…"   2 days ago     Up 13 hours   2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp, 8080/tcp   zookeeper
+
+# Avro 스키마 Json 파일 
+$ cd schema
+$ ls 
+schema_before.json
+- 첨부된 스키마 Json 파일 위치  
+
+# Kafka UI
+http://localhost:9000/
+- 브로커 상태 및 토픽 파티션의 메시지 확인 가능 
+
+# Kafka Console
+docker exec -it kafka1 /bin/bash
+
+# MySQL Console
+$ docker exec -it mysql /bin/bash
+$ mysql -u infra -p  # pw: infra1!
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 46663
+Server version: 8.0.32 MySQL Community Server - GPL
 ```
 
 
@@ -70,7 +91,8 @@ mysql.password=infra1!
 2. Maven을 사용하여 프로젝트를 빌드합니다.
 3. Maven을 사용하여 Consumer 애플리케이션을 실행합니다.
 ```bash
-$ mvn clean compile exec:java
+$ mvn clean compile 
+$ mvn exec:java
 
 [INFO] --- exec:3.0.0:java (default-cli) @ infra ---
 [Main.main()] INFO Main - data pipeline setting start...
@@ -79,6 +101,41 @@ $ mvn clean compile exec:java
 [Main.main()] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset3
 [Main.main()] INFO com.exam.worker.DataPipeline - Avro schema Json dumped succeessfully ...
 
+# Avro 스키마 Json 파일 
+$ cd schema
+$ ls 
+schema_avro.json        schema_before.json
+- 정상적으로 Avro 스키마 Json 파일이 생성되었는지 확인한다. 
+
+# Kafka UI
+http://localhost:9000/
+- Kafka UI와 Console에서 정상적으로 토픽이 생성되었는지 확인한다. 
+
+# Kafka Console
+$ docker exec -it kafka1 /bin/bash
+$ cd /usr/bin
+$ kafka-topics --bootstrap-server kafka1:19091,kafka2:19092,kafka3:19093 --list
+__consumer_offsets
+_schemas
+dataset1
+dataset2
+dataset3
+
+# MySQL Console
+$ docker exec -it mysql /bin/bash
+$ mysql -u infra -p  # pw: infra1!
+- 정상적으로 MySQL 데이터베이스와 테이블이 생성되었는지 확인한다. 
+mysql> use bank;
+mysql> show tables;
++----------------+
+| Tables_in_bank |
++----------------+
+| dataset1       |
+| dataset2       |
+| dataset3       |
+| kafka_offsets  |
++----------------+
+4 rows in set (0.00 sec)
 ```
 
 ### Application Deploy
