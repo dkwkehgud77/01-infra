@@ -1,16 +1,3 @@
-
-# 인프라
-
-### 1. infra 세팅
-- Zookeeper, Kafka, Schema-Registry, MySQL 생성
-- AVRO 스키마, Kafka 토픽, MySql 테이블 생성
-
-```bash
-cd realtime-pipeline/01-infra
-docker-compose up -d 
-```
-
-
 # Data Pipeline Setting
 
 ## Introduction
@@ -30,6 +17,34 @@ docker-compose up -d
 - Apache Maven 3.9.0
 - Apache Kafka 2.8.1
 - MySQL 8.0
+- Docker 20.10.17
+- docker-compose 1.29.2
+
+
+### Infra Setting 
+- Zookeeper, Kafka, Schema-Registry, MySQL 생성 및 실행 
+- AVRO 스키마, Kafka 토픽, MySql 테이블 생성
+
+```bash
+$ docker-compose up -d 
+Starting mysql     ... done
+Starting zookeeper ... done
+Starting kafka2    ... done
+Starting kafka1    ... done
+Starting kafka3    ... done
+Starting schema-registry ... done
+Starting kafdrop         ... done
+
+$ docker ps
+CONTAINER ID   IMAGE                                   COMMAND                  CREATED        STATUS        PORTS                                                  NAMES
+b0ef08a377b2   obsidiandynamics/kafdrop                "/kafdrop.sh"            13 hours ago   Up 13 hours   0.0.0.0:9000->9000/tcp                                 kafdrop
+9a23d9188cf1   confluentinc/cp-schema-registry:7.0.0   "/etc/confluent/dock…"   13 hours ago   Up 13 hours   0.0.0.0:8081->8081/tcp                                 schema-registry
+c37a1e5ab2ba   confluentinc/cp-kafka:7.0.0             "/etc/confluent/dock…"   13 hours ago   Up 13 hours   9092/tcp, 0.0.0.0:9093->9093/tcp                       kafka3
+a9e70028d48e   confluentinc/cp-kafka:7.0.0             "/etc/confluent/dock…"   13 hours ago   Up 13 hours   0.0.0.0:9091->9091/tcp, 9092/tcp                       kafka1
+2161366c7af8   confluentinc/cp-kafka:7.0.0             "/etc/confluent/dock…"   13 hours ago   Up 13 hours   0.0.0.0:9092->9092/tcp                                 kafka2
+e4378c3e42ca   mysql:8.0                               "docker-entrypoint.s…"   2 days ago     Up 13 hours   0.0.0.0:3306->3306/tcp, 33060/tcp                      mysql
+9a4e488a016e   zookeeper:3.7                           "/docker-entrypoint.…"   2 days ago     Up 13 hours   2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp, 8080/tcp   zookeeper
+```
 
 
 ### Configuration
