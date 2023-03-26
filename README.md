@@ -81,7 +81,7 @@ $ mvn exec:java
 [main] INFO com.exam.worker.DataPipeline - Avro schema Json dumped succeessfully ...
 ```
 
-### Application Deployment
+### Application Deploy
 1. properties 파일을 세팅합니다.
 2. Maven을 사용하여 프로젝트를 패키징합니다.
 3. Java를 사용하여 백그라운드로 Producer 애플리케이션을 실행합니다.
