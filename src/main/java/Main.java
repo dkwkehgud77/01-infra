@@ -22,7 +22,6 @@ public class Main {
         try(FileReader reader = new FileReader(jsonFilePath)){
             JSONParser parser = new JSONParser();
             JSONArray beforeJsonArray = (JSONArray) parser.parse(reader);
-            System.out.println(beforeJsonArray.toJSONString());
 
             // JSONArray 으로 Avro 스키마 Json 파일을 생성하고, Schema 리스트로 반환합니다.
             List<Schema> avroSchemaList = pipeline.createSchema(beforeJsonArray);

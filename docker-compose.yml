@@ -40,7 +40,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
-      - ./kafka/data1:/tmp/kafka-logs
+      - ./data/kafka1:/tmp/kafka-logs
     depends_on:
       - zookeeper
   kafka2:
@@ -57,7 +57,7 @@ services:
         KAFKA_BROKER_ID: 2
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       volumes:
-        - ./kafka/data2:/tmp/kafka-logs
+        - ../data/kafka2:/tmp/kafka-logs
       depends_on:
         - zookeeper
   kafka3:
@@ -74,7 +74,7 @@ services:
         KAFKA_BROKER_ID: 3
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       volumes:
-        - ./kafka/data3:/tmp/kafka-logs
+        - ../data/kafka3:/tmp/kafka-logs
       depends_on:
         - zookeeper
 

@@ -58,7 +58,7 @@ public class DataPipeline {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in Avro Schema Json Parsing", e);
         }
 
         // Avro 포맷의 Json 파일로 덤프합니다. -> Kafka 프로듀서에서 Avro 스키마 로드할 때 사용됩니다.
@@ -89,50 +89,36 @@ public class DataPipeline {
             for(Schema avroSchema : avroSchemaList) {
                 String topicName = avroSchema.getName();
 
-                // 토픽이 존재하는지 확인하고 있으면 삭제합니다.
-                ListTopicsResult listTopicsResult = adminClient.listTopics();
-                Set<String> topicNames = listTopicsResult.names().get();
-                if (topicNames.contains(topicName)) {
+                // Kafka 토픽이 존재하는지 확인하고 있으면 삭제합니다.
+                if (adminClient.listTopics().names().get().contains(topicName)) {
                     adminClient.deleteTopics(Collections.singleton(topicName)).all().get();
-                    logger.info("Topic has been deleted... " + topicName);
+                    logger.info("Topic is deleting... " + topicName);
+                    Thread.sleep(3000);
+
+                    // 만약 토픽이 존재하면 완전히 제거될 때까지 대기합니다.
+                    while (adminClient.listTopics().names().get().contains(topicName)) {
+                        logger.info("Topic is deleting... Make sure that the consumer is turned on " + topicName);
+                        Thread.sleep(3000);
+                    }
                 }
+
                 // 지정한 Partition 개수와 Replication Factor 개수로 토픽을 생성합니다.
                 NewTopic newTopic = new NewTopic(topicName, numPartitions, (short) replicationFactor);
                 adminClient.createTopics(Collections.singletonList(newTopic));
+                logger.info("Topic is creating... " + topicName);
+                Thread.sleep(3000);
 
-                listTopicsResult = adminClient.listTopics();
-                topicNames = listTopicsResult.names().get();
-                if (topicNames.contains(topicName)){
-                    logger.info("Topic %s created successfully... " + topicName);
+                // 해당 Kafka 토픽이 잘 생성되었는지 확인합니다.
+                if (adminClient.listTopics().names().get().contains(topicName)) {
+                    logger.info("Topic created successfully... " + topicName);
                 }
-
-
-// 해당 토픽 삭제
-//                adminClient.deleteTopics(Collections.singleton(topicName)).all().get();
-
-//                // 토픽이 있으면 삭제하고 토픽 생성
-//                ListTopicsResult listTopicsResult = adminClient.listTopics();
-//                Set<String> topicNames = listTopicsResult.names().get();
-//                while (true){
-//                    if (!topicNames.contains(topicName)) {
-//                        logger.info("Topic %s has been deleted.\n", topicName);
-//
-//                        // 토픽 생성
-//                        NewTopic newTopic = new NewTopic(topicName, numPartitions, (short) replicationFactor);
-//                        adminClient.createTopics(Collections.singletonList(newTopic));
-//
-//                        topicNames = listTopicsResult.names().get();
-//                        if (topicNames.contains(topicName)){
-//                            logger.info("Topic created successfully... " + topicName);
-//                            break;
-//                        }
-//                    }
-//                }
-
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            logger.error("Thread interrupted", e);
+        } catch (ExecutionException e) {
+            logger.error("Error occurred in Execution", e);
+        } catch (Exception e) {
+            logger.error("Unsupported error", e);
         }
 
     }
@@ -171,7 +157,7 @@ public class DataPipeline {
             stmt.executeUpdate(sql_offsets);
 
             // Avro 스키마 포맷을 기반으로 최종적으로 Kafka 메시지를 저장할 테이블을 생성합니다.
-            for(Schema avroSchema : avroSchemaList) {
+            for (Schema avroSchema : avroSchemaList) {
 
                 // Avro 스키마에서 Table 명과 Filed 리스트를 가져옵니다.
                 String tableName = avroSchema.getName();
@@ -217,10 +203,12 @@ public class DataPipeline {
                 // 최종적으로 데이터가 적재될 테이블을 생성합니다.
                 stmt.executeUpdate(sql_table.toString());
 
-                System.out.println("Table created successfully... " + tableName);
+                logger.info("Table created successfully... " + tableName);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            logger.error("jdbc Driver Not founded", e);
+        } catch (SQLException e) {
+            logger.error("Error in SQL operation", e);
         } finally {
             // 작업이 끝나면 Statement 와 Connection 객체를 반환합니다.
             try {
@@ -229,7 +217,7 @@ public class DataPipeline {
                 if (conn != null)
                     conn.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Error in Connection close", e);
             }
 
         }
