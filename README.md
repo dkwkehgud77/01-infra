@@ -90,6 +90,10 @@ $ mvn clean compile
 $ nohup java -jar target/producer-1.0-jar-with-dependencies.jar &
 
 [1]  + exit 1     nohup java -jar target/producer-1.0-jar-with-dependencies.jar
+
+$ ps -ef |grep infra
+  501 13165 10580   0  1:56PM ttys018    0:01.93 /usr/bin/java -jar target/infra-1.0-jar-with-dependencies.jar
+  501 13181 10580   0  1:56PM ttys018    0:00.00 grep infra
 ```
 
 ### Application Stop
@@ -97,5 +101,7 @@ Mac이나 리눅스 기반의 OS에서는 Shell 파일을 이용해서 애플리
 ```bash
 $ chmod 755 start.sh stop.sh
 $ ./stop.sh
+
+[1]  + killed     nohup java -jar target/infra-1.0-jar-with-dependencies.jar
 ```
 

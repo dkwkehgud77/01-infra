@@ -1,1 +1,1 @@
-pkill -9 -f 01-infra
+pkill -9 -f infra
