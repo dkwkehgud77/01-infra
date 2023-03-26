@@ -23,7 +23,7 @@
 
 
 ### Infra Setting 
-- Zookeeper, Kafka, Schema-Registry, MySQL 생성 및 실행 
+- Kafka, Schema-Registry, MySQL 생성 및 실행 
 - AVRO 스키마, Kafka 토픽, MySql 테이블 생성
 
 ```bash
