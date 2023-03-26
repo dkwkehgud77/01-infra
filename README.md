@@ -73,6 +73,12 @@ mysql.password=infra1!
 ```bash
 $ mvn clean compile
 $ mvn exec:java
+
+[main] INFO Main - data pipeline setting start...
+[main] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset1
+[main] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset2
+[main] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset3
+[main] INFO com.exam.worker.DataPipeline - Avro schema Json dumped succeessfully ...
 ```
 
 ### Application Deployment
@@ -82,6 +88,8 @@ $ mvn exec:java
 ```bash
 $ mvn clean compile
 $ nohup java -jar target/producer-1.0-jar-with-dependencies.jar &
+
+[1]  + exit 1     nohup java -jar target/producer-1.0-jar-with-dependencies.jar
 ```
 
 ### Application Stop

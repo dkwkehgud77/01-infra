@@ -3,6 +3,8 @@ import org.apache.avro.Schema;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,8 +14,10 @@ import java.util.ResourceBundle;
 
 public class Main {
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("config");
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
+        logger.info("data pipeline setting start...");
         // AVRO 스키마, Kafka 토픽 및 MySql 테이블 생성 작업을 수행하는 DataPipeline 객체를 생성합니다.
         DataPipeline pipeline = new DataPipeline();
 
@@ -35,6 +39,7 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        logger.info("data pipeline setting stop...");
         // 모든 작업이 완료되면 애플리케이션을 종료합니다.
         System.exit(0);
     }
