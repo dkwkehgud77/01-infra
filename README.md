@@ -70,9 +70,14 @@ mysql.password=infra1!
 2. Maven을 사용하여 프로젝트를 빌드합니다.
 3. Maven을 사용하여 Consumer 애플리케이션을 실행합니다.
 ```bash
-$ mvn clean compile
-$ mvn exec:java
+$ mvn clean compile exec:java
 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.767 s
+[INFO] Finished at: 2023-03-26T14:16:28+09:00
+[INFO] ------------------------------------------------------------------------
 [main] INFO Main - data pipeline setting start...
 [main] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset1
 [main] INFO com.exam.worker.DataPipeline - Avro schema created succeessfully ... dataset2
